@@ -2,6 +2,7 @@
   background: var(--gray-800);
   border-radius: 8px;
   overflow: hidden;
+  align-items: center;
 }
 
 .cover {
@@ -17,15 +18,6 @@
   margin-top: calc(0px - 1.5rem - 6px);
 }
 
-.avatar {
-  width: 3rem;
-  height: 3rem;
-  /* height: calc(3rem + 12px); */
-  border-radius: 8px;
-  border: 4px solid var(--gray-800);
-  outline: 2px solid var(--green-500);
-  box-sizing: initial;
-}
 .profile strong {
   margin-top: 1rem;
   color: var(--gray-100);
