@@ -18,16 +18,21 @@ export function Post({ author, publishedAt, content }) {
     const publishedDateFormatted = format(publishedAt, "d 'de' LLLL 'às' HH'h'mm", { locale: ptBR })
     const publishedDateRelativeToNow = formatDistanceToNow(publishedAt, { locale: ptBR, addSuffix: true })
 
-
-    function newCommentChange() {
+    function handleDeleCommentNewCommentChange() {
         setNewComments(event.target.value)
     }
-
     function createNewComment() {
         event.preventDefault()
 
         setComments([...comments, newComments])
         setNewComments('')
+    }
+    function deleComment(commentToDelete) {
+        const commentsWithoutDeletedOne = comments.filter(comment => {
+            return comment != commentToDelete
+        })
+
+        setComments(commentsWithoutDeletedOne)
     }
 
     return (
@@ -45,25 +50,23 @@ export function Post({ author, publishedAt, content }) {
             <div className={styles.content}>
                 {content.map(line => {
                     if (line.type === 'paragraph') {
-                        return <p> {line.content}</p>
+                        return <p key={line.content}> {line.content}</p>
                     } else if (line.type === 'link') {
-                        return <p> <a href='#'>{line.content} </a></p>
+                        return <p key={line.content}> <a href='#'>{line.content} </a></p>
                     }
                 })}
             </div>
             <form onSubmit={createNewComment} className={styles.commentForm}>
                 <strong> Deixe seu feedback!</strong>
-                <textarea name='comment' placeholder='Deixe um comentário!' value={newComments} onChange={newCommentChange} />
+                <textarea name='comment' placeholder='Deixe um comentário!' value={newComments} onChange={handleDeleCommentNewCommentChange} />
                 <footer>
                     <button type='submite'> Publicar</button>
                 </footer>
             </form>
             <div className={styles.commentList}>
-
                 {comments.map(comment => {
-                    return (<Comment content={comment} />)
+                    return (<Comment key={comment} content={comment} onDeleComment={deleComment} />)
                 })}
-
             </div>
         </article>
     )
