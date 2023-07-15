@@ -1,38 +1,69 @@
+/* eslint-disable react/jsx-key */
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
+import { useState } from 'react'
+import { format, formatDistanceToNow } from 'date-fns'
+import ptBR from 'date-fns/locale/pt-BR'
+
 import { Avatar } from './Avatar'
 import { Comment } from './Comment'
+
 import styles from './Post.module.css'
 
-export function Post() {
+export function Post({ author, publishedAt, content }) {
+
+    const [comments, setComments] = useState(['first post, tá ok?!!'])
+    const [newComments, setNewComments] = useState('')
+
+    const publishedDateFormatted = format(publishedAt, "d 'de' LLLL 'às' HH'h'mm", { locale: ptBR })
+    const publishedDateRelativeToNow = formatDistanceToNow(publishedAt, { locale: ptBR, addSuffix: true })
+
+
+    function newCommentChange() {
+        setNewComments(event.target.value)
+    }
+
+    function createNewComment() {
+        event.preventDefault()
+
+        setComments([...comments, newComments])
+        setNewComments('')
+    }
+
     return (
         <article className={styles.post}>
             <header>
                 <div className={styles.author}>
-                    <Avatar src='https://github.com/maykbrito.png' />
+                    <Avatar src={author.avatarURL} />
                     <div className={styles.authorInfo}>
-                        <strong>Allef Reis</strong>
-                        <span>Consult React</span>
+                        <strong>{author.name}</strong>
+                        <span>{author.role}</span>
                     </div>
                 </div>
-                <time title='Publicado em 6 de julho de 2022' dateTime='2022-07-06 18:21:00'> Publicado há 1h</time>
+                <time title={publishedDateFormatted} dateTime={publishedAt.toISOString()}>{publishedDateRelativeToNow} </time>
             </header>
-
             <div className={styles.content}>
-                <p> Fala galera! </p>
-                <p> commmit de mais um post </p>
-                <p> ♪ {' '}<a href='#' >github.allef.....</a> </p>
-                <p> <a href='#' >#NLW</a> {' '}<a href='#' >#NLW</a>{' '}<a href='#' >#NLW</a></p>
+                {content.map(line => {
+                    if (line.type === 'paragraph') {
+                        return <p> {line.content}</p>
+                    } else if (line.type === 'link') {
+                        return <p> <a href='#'>{line.content} </a></p>
+                    }
+                })}
             </div>
-            <form className={styles.commentForm}>
+            <form onSubmit={createNewComment} className={styles.commentForm}>
                 <strong> Deixe seu feedback!</strong>
-                <textarea placeholder='Deixe um comentário!' />
+                <textarea name='comment' placeholder='Deixe um comentário!' value={newComments} onChange={newCommentChange} />
                 <footer>
                     <button type='submite'> Publicar</button>
                 </footer>
             </form>
             <div className={styles.commentList}>
-                <Comment />
-                <Comment />
-                <Comment />
+
+                {comments.map(comment => {
+                    return (<Comment content={comment} />)
+                })}
+
             </div>
         </article>
     )
