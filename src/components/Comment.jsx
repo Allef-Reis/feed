@@ -1,13 +1,24 @@
-/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import { ThumbsUp, Trash } from 'phosphor-react'
 import styles from './Comment.module.css'
 import { Avatar } from './Avatar'
 
+import { useState } from 'react'
+
+
 export function Comment({ content, onDeleComment }) {
+
+    const [linkCount, setLikeCount] = useState(0);
 
     function handleDeleComment() {
         onDeleComment(content)
+    }
+    function handleLikeComment() {
+        // setLikeCount(linkCount + 1)
+        setLikeCount((value) => {
+            return value + 1
+        })
     }
 
     return (
@@ -27,8 +38,8 @@ export function Comment({ content, onDeleComment }) {
                     <p> {content}</p>
                 </div>
                 <footer>
-                    <button>
-                        <ThumbsUp size={20} /> Aplaudir <span> 20 </span>
+                    <button onClick={handleLikeComment}>
+                        <ThumbsUp size={20} /> Aplaudir <span> {linkCount} </span>
                     </button>
                 </footer>
             </div>
